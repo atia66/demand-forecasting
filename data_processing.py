@@ -15,13 +15,11 @@ class DemandDataset(Dataset):
         self.X          = []
         self.y          = []
 
-        if artifacts is None:
-            # Training set — fit everything from scratch
+        if artifacts is None: # Training mode
             self.encoding()
             self.scale_features()
             self.set_embeddings()
-        else:
-            # Val/test set — reuse fitted artifacts from train
+        else: # Inference mode — reuse training artifacts
             self.encoders           = artifacts["encoders"]
             self.valid_categories   = artifacts["valid_categories"]
             self.feature_cols       = artifacts["feature_cols"]
@@ -34,7 +32,6 @@ class DemandDataset(Dataset):
 
         self.process_data()
 
-    # ── Fit path (train only) ─────────────────────────────────────────────────
     def encoding(self):
         self.encoders         = {}
         self.valid_categories = {}
@@ -44,8 +41,7 @@ class DemandDataset(Dataset):
 
         for col in categorical_cols:
             if col == "Date":
-                # Use ordinal int — avoids unseen-label errors on val/test dates
-                self.df[col] = pd.to_datetime(self.df[col]).map(lambda d: d.toordinal())
+                self.df[col] = pd.to_datetime(self.df[col]).map(lambda d: d.toordinal()) # get timestamp from date 
             else:
                 le = LabelEncoder()
                 self.df[col] = le.fit_transform(self.df[col])
@@ -72,7 +68,6 @@ class DemandDataset(Dataset):
             num_classes = len(self.valid_categories[col])
             self.embeddings[col] = nn.Embedding(num_classes, 5)
 
-    # ── Transform path (val/test only) ────────────────────────────────────────
     def _apply_encoders(self):
         for col in self.df.select_dtypes(include=["object"]).columns:
             if col == "Date":
@@ -87,7 +82,6 @@ class DemandDataset(Dataset):
         self.df[[self.target_col]] = self.target_scaler.transform(
             self.df[[self.target_col]])
 
-    # ── Shared ────────────────────────────────────────────────────────────────
     def process_data(self):
         groups = self.df.groupby(["Product ID", "Store ID"])
 

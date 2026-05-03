@@ -65,13 +65,6 @@ class DemandForecastGUI:
             self.model.load_state_dict(checkpoint_weights["model_state_dict"])
             self.model.eval()
 
-            print("=" * 60)
-            print("✅ Model loaded successfully!")
-            print(f"Input size: {input_size}")
-            print(f"Categorical features: {list(self.valid_categories.keys())}")
-            print(f"Numerical features:   {self.numerical_features}")
-            print("=" * 60)
-
             self._key_alias = {k.lower().strip(): k for k in self.valid_categories}
 
         except Exception as e:
@@ -87,8 +80,8 @@ class DemandForecastGUI:
                 size += 1
         return size
 
-    # ── Key resolver ──────────────────────────────────────────────────────────
     def _resolve_key(self, *candidates):
+        
         for c in candidates:
             if c in self.valid_categories:
                 return c
@@ -105,7 +98,6 @@ class DemandForecastGUI:
               f"Available: {list(self.valid_categories.keys())}")
         return None
 
-    # ── Widget factories ──────────────────────────────────────────────────────
     def _make_combo(self, parent, preferred_key, row, col,
                     label_text, label_col, *alt_keys):
         real_key = self._resolve_key(preferred_key, *alt_keys)
@@ -154,7 +146,6 @@ class DemandForecastGUI:
             w.grid(row=row, column=col + 1, padx=10, pady=7)
             setattr(self, attr, w)
 
-    # ── UI layout ─────────────────────────────────────────────────────────────
     def setup_ui(self):
         tk.Label(self.root, text="Demand Forecasting System",
                  font=("Segoe UI", 22, "bold"),
@@ -297,7 +288,6 @@ class DemandForecastGUI:
             justify=tk.LEFT)
         self.details_label.pack(pady=8)
 
-    # ── Encode categorical widget ─────────────────────────────────────────────
     def _encode(self, widget):
         real_key = widget._real_key
         if real_key is None:
@@ -315,7 +305,6 @@ class DemandForecastGUI:
                 f"Valid options: {valid}")
         return self.encoders[real_key].transform([val])[0]
 
-    # ── Build feature tensor ──────────────────────────────────────────────────
     def get_current_input(self):
         raw = {
             "Store ID":           self.store_entry.get(),
@@ -386,7 +375,6 @@ class DemandForecastGUI:
         feature_tensor = torch.cat(processed_features, dim=1).squeeze(0)
         return feature_tensor, raw
 
-    # ── Table refresh ─────────────────────────────────────────────────────────
     def _refresh_table(self):
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -413,7 +401,6 @@ class DemandForecastGUI:
             text=f"{n} / 14 days added",
             fg="#00ff88" if n == 14 else "#ff9500")
 
-    # ── Actions ───────────────────────────────────────────────────────────────
     def add_to_history(self):
         try:
             feature_tensor, raw = self.get_current_input()

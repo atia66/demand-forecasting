@@ -22,7 +22,6 @@ if __name__ == "__main__":
         if len(group) >= 15:
             group_sorted = group.sort_values("Date")
             group_sorted.iloc[:14].to_csv("val_sequence.csv", index=False)   # 14 input days
-            # group_sorted.iloc[:15].to_csv("val_check.csv",    index=False)   # 15th row = ground truth
             break
 
     input_size = train_dataset.get_feature_size()
@@ -40,6 +39,7 @@ if __name__ == "__main__":
         model.train()
         train_loss = 0
         for X, y in train_loader:
+            
             optimizer.zero_grad()
             preds = model(X).squeeze()
             loss  = criterion(preds, y)
@@ -98,4 +98,5 @@ if __name__ == "__main__":
     plt.show()                    
     
     print("\n💾 Model saved to 'demand_model.pth'")
+    
     print("💾 Artifacts saved to 'model_artifacts.pkl'")
