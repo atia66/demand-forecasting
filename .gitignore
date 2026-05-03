@@ -1,0 +1,7 @@
+.vscode
+__pycache__
+*.pyc
+*.pkl
+*.pth
+val_check.csv
+val_sequence.csv
