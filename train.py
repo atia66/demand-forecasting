@@ -22,7 +22,7 @@ if __name__ == "__main__":
         if len(group) >= 15:
             group_sorted = group.sort_values("Date")
             group_sorted.iloc[:14].to_csv("val_sequence.csv", index=False)   # 14 input days
-            group_sorted.iloc[:15].to_csv("val_check.csv",    index=False)   # 15th row = ground truth
+            # group_sorted.iloc[:15].to_csv("val_check.csv",    index=False)   # 15th row = ground truth
             break
 
     input_size = train_dataset.get_feature_size()
