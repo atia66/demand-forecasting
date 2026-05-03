@@ -93,8 +93,9 @@ if __name__ == "__main__":
     plt.ylabel("Loss")
     plt.title("Training and Validation Normalized Loss")
     plt.legend()
-    plt.show()
-    plt.savefig("loss_plot.png")
+
+    plt.savefig("loss_plot.png") 
+    plt.show()                    
     
     print("\n💾 Model saved to 'demand_model.pth'")
     print("💾 Artifacts saved to 'model_artifacts.pkl'")
